@@ -4,6 +4,7 @@ import com.chatwave.chatwave.dao.IUser;
 import com.chatwave.chatwave.error.UserNotFoundException;
 import com.chatwave.chatwave.models.UserModel;
 import com.chatwave.chatwave.service.UserService;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,8 +43,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel updateUser(UserModel userModel) {
-        return null;
+    public UserModel updateUser(Integer id, UserModel updatedUserModel) {
+        Optional<UserModel> oUserModel = repository.findById(id);
+
+        if (!oUserModel.isPresent())
+            throw new UserNotFoundException();
+
+        UserModel userModel = oUserModel.get();
+        userModel.setUsername(updatedUserModel.getUsername());
+        userModel.setPassword(updatedUserModel.getPassword());
+        userModel.setEmail(updatedUserModel.getEmail());
+        userModel.setName(updatedUserModel.getName());
+        userModel.setProfilePic(updatedUserModel.getProfilePic());
+        userModel.setBio(updatedUserModel.getBio());
+
+        repository.save(userModel);
+        return userModel;
     }
 
     @Override
