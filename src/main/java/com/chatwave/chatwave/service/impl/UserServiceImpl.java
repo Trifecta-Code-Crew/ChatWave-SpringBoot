@@ -1,6 +1,7 @@
 package com.chatwave.chatwave.service.impl;
 
 import com.chatwave.chatwave.dao.IUser;
+import com.chatwave.chatwave.error.UserNotFoundException;
 import com.chatwave.chatwave.models.UserModel;
 import com.chatwave.chatwave.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +22,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserModel> getUserById(Integer id) {
-        return Optional.ofNullable(repository.findById(id)).orElseThrow(IllegalArgumentException::new);
+        return Optional.ofNullable(repository.findById(id)).orElseThrow(UserNotFoundException::new);
     }
 
     @Override
     public Optional<UserModel> getUserByUsername(String username) {
-        return Optional.ofNullable(repository.findByUsername(username)).orElseThrow(IllegalArgumentException::new);
+        return Optional.ofNullable(repository.findByUsername(username)).orElseThrow(UserNotFoundException::new);
     }
 
     @Override
     public Optional<UserModel> getUserByEmail(String email) {
-        return Optional.ofNullable(repository.findByEmail(email)).orElseThrow(IllegalArgumentException::new);
+        return Optional.ofNullable(repository.findByEmail(email)).orElseThrow(UserNotFoundException::new);
     }
 
     @Override

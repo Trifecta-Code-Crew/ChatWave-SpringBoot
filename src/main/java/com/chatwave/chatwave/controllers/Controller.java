@@ -1,5 +1,6 @@
 package com.chatwave.chatwave.controllers;
 
+import com.chatwave.chatwave.error.UserNotFoundException;
 import com.chatwave.chatwave.models.UserModel;
 import com.chatwave.chatwave.service.UserService;
 import org.apache.catalina.User;
@@ -39,6 +40,9 @@ public class Controller {
        if (username == null && email == null)
            return (List<UserModel>) userService.getAllUsers();
 
+       if (!userModel.isPresent())
+           throw new UserNotFoundException();
+
        userModels.add(userModel.get());
        return userModels;
     }
@@ -69,7 +73,7 @@ public class Controller {
         Optional<UserModel> userModel = userService.getUserById(id);
 
         if (!userModel.isPresent())
-            throw new IllegalArgumentException();
+            throw new UserNotFoundException();
 
         return userModel.get();
     }
