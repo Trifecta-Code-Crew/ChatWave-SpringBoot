@@ -1,16 +1,17 @@
 package com.chatwave.chatwave.dao;
 
 import com.chatwave.chatwave.models.UserModel;
+import org.apache.catalina.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface IUser {
-    public List<UserModel> getAllUsers();
-    public UserModel getUserById(int id);
-    public UserModel getUserByUsername(String username);
-    public UserModel getUserByEmail(String email);
-    public void createUser(UserModel user);
-    public void updateUser(UserModel user);
-    public void deleteUser(int id);
-    public void validateUser(UserModel user);
+public interface IUser extends CrudRepository<UserModel, Integer> {
+
+    Optional<UserModel> findByUsername(String username);
+
+    Optional<UserModel> findByEmail(String email);
+
 }

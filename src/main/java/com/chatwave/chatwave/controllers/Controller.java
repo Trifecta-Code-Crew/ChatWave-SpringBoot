@@ -1,28 +1,77 @@
 package com.chatwave.chatwave.controllers;
 
-import com.chatwave.chatwave.dao.UserDaoImp;
 import com.chatwave.chatwave.models.UserModel;
+import com.chatwave.chatwave.service.UserService;
+import org.apache.catalina.User;
+import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping(value = "chatWave/users")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class Controller {
 
     @Autowired
-    private UserDaoImp userDaoImp;
+    private UserService userService;
 
-    @RequestMapping("/getUser")
-    public List <UserModel> getUser() {
-       return userDaoImp.getAllUsers();
+    @GetMapping
+    @ResponseStatus(code = HttpStatus.OK)
+    public List <UserModel> getUsers(
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "username", required = false) String username
+    ) {
+        List<UserModel> userModels = new ArrayList<>();
+        Optional<UserModel> userModel = null;
+
+       if (email != null)
+           userModel = userService.getUserByEmail(email);
+
+       if (username != null)
+           userModel = userService.getUserByUsername(username);
+
+       if (username == null && email == null)
+           return (List<UserModel>) userService.getAllUsers();
+
+       userModels.add(userModel.get());
+       return userModels;
     }
 
-    @RequestMapping("/getUserById/{id}")
-    public UserModel getUserById(@PathVariable int id) { return userDaoImp.getUserById(id); }
+    @PostMapping
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public UserModel createUser(
+            @RequestBody UserModel userModel) {
 
-    @RequestMapping("/getUserByUsername/{username}")
-    public UserModel getUserByUsername(@PathVariable String username) { return userDaoImp.getUserByUsername(username); }
+        userService.createUser(userModel);
+        UserModel userModel1 = userModel;
+        return userModel1;
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void deleteUser(
+            @PathVariable(value = "id") Integer id) {
+
+        userService.deleteUser(id);
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public UserModel getUserById(
+            @PathVariable(value = "id") Integer id
+    ) {
+        Optional<UserModel> userModel = userService.getUserById(id);
+
+        if (!userModel.isPresent())
+            throw new IllegalArgumentException();
+
+        return userModel.get();
+    }
+
 }
