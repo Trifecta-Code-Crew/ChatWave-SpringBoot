@@ -6,7 +6,6 @@ import com.chatwave.chatwave.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,17 +21,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserModel> getUserById(Integer id) {
-        return Optional.ofNullable(repository.findById(id)).orElseThrow(() -> new IllegalArgumentException());
+        return Optional.ofNullable(repository.findById(id)).orElseThrow(IllegalArgumentException::new);
     }
 
     @Override
     public Optional<UserModel> getUserByUsername(String username) {
-        return Optional.ofNullable(repository.findByUsername(username)).orElseThrow(() -> new IllegalArgumentException());
+        return Optional.ofNullable(repository.findByUsername(username)).orElseThrow(IllegalArgumentException::new);
     }
 
     @Override
     public Optional<UserModel> getUserByEmail(String email) {
-        return Optional.ofNullable(repository.findByEmail(email)).orElseThrow(() -> new IllegalArgumentException());
+        return Optional.ofNullable(repository.findByEmail(email)).orElseThrow(IllegalArgumentException::new);
     }
 
     @Override
